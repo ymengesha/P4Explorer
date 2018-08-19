@@ -1,0 +1,6 @@
+[
+	{"command": "perf_mine", "keys": ["alt+q"],
+        "context": [
+        ]
+    },
+]
