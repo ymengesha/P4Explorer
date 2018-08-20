@@ -5,6 +5,7 @@ import os
 import os.path
 import subprocess
 import tempfile
+import re
 
 __PLUGIN_NAME__='P4Explorer'
 
@@ -32,9 +33,23 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
 	def getTmpFilePath(self, perforcePath):
 		tmp_dir = tempfile.gettempdir()
-		# TO-DO: consider the path extension of the tmp file ?
-		tmp_file_name = perforcePath.lstrip('/')
+		tmp_file_name = self.getTmpFileName(perforcePath)
 		return os.path.abspath(os.path.join(tmp_dir, __PLUGIN_NAME__, tmp_file_name))
+
+	def getTmpFileName(self, perforcePath):
+		file_path = perforcePath.lstrip('/')
+
+		rev_pattern = re.compile(r'.*(#\d+)$')
+		match = re.match(rev_pattern, file_path)
+		if match:
+			root, ext = os.path.splitext(file_path)
+			if ext:
+				rev = match.group(1)
+				rearranged_ext = rev + ext[:-len(rev)]
+				return root + rearranged_ext
+
+		return file_path
+
 
 	def fetchPeforceFile(self, perforcePath, tmpPath):
 		perforce_command = 'p4 print -q -o {0} {1}'.format(tmpPath, perforcePath)
