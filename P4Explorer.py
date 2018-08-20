@@ -5,9 +5,9 @@ import os
 import os.path
 import subprocess
 
-__PLUGIN_NAME__='PerfMine'
+__PLUGIN_NAME__='P4Explorer'
 
-class PerfMineCommand(sublime_plugin.WindowCommand):
+class P4Explorer(sublime_plugin.WindowCommand):
 	def run(self):
 		active_view = self.window.active_view()
 
@@ -15,9 +15,9 @@ class PerfMineCommand(sublime_plugin.WindowCommand):
 
 		for region in selection:
 			if region.empty():
-				self.log('Info', 'Region is empty.')
+				P4Explorer.log('Info', 'Region is empty.')
 				# TO-DO: consider detection of Perforce paths when there is no selection
-				self.log('Info', active_view.substr(active_view.word(region)))
+				P4Explorer.log('Info', active_view.substr(active_view.word(region)))
 				continue
 			else:
 				perforce_path = active_view.substr(region).strip()
@@ -49,7 +49,7 @@ class PerfMineCommand(sublime_plugin.WindowCommand):
 			p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 			stdout, stderr = p.communicate(timeout=120)
 			if(stderr):
-				self.log('Error', stderr)
+				P4Explorer.log('Error', stderr)
 				return False
 		return True
 
