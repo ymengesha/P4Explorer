@@ -57,7 +57,7 @@ class P4Explorer(sublime_plugin.WindowCommand):
 			p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 			stdout, stderr = p.communicate(timeout=60)
 			if stderr:
-				P4Explorer.log('Error', stderr)
+				P4Explorer.log('Error', stderr.decode())
 				return False
 
 		return True
