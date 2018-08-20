@@ -1,5 +1,5 @@
 [
-	{"command": "perf_mine", "keys": ["alt+q"],
+	{"command": "p4_explorer", "keys": ["alt+q"],
         "context": [
         ]
     },
