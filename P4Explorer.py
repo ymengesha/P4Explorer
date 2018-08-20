@@ -52,14 +52,14 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
 
 	def fetchPeforceFile(self, perforcePath, tmpPath):
-		perforce_command = 'p4 print -q -o {0} {1}'.format(tmpPath, perforcePath)
-
 		if not os.path.isfile(tmpPath):
+			perforce_command = 'p4 print -q -o {0} {1}'.format(tmpPath, perforcePath)
 			p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-			stdout, stderr = p.communicate(timeout=120)
-			if(stderr):
+			stdout, stderr = p.communicate(timeout=60)
+			if stderr:
 				P4Explorer.log('Error', stderr)
 				return False
+
 		return True
 
 	@staticmethod
