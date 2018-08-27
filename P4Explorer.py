@@ -17,9 +17,9 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
 		for region in selection:
 			if region.empty():
-				P4Explorer.log('Info', 'Region is empty.')
+				P4Explorer.logInfo('Region is empty.')
 				# TO-DO: consider detection of Perforce paths when there is no selection
-				P4Explorer.log('Info', active_view.substr(active_view.word(region)))
+				P4Explorer.logInfo(active_view.substr(active_view.word(region)))
 				continue
 			else:
 				perforce_path = active_view.substr(region).strip()
@@ -57,7 +57,7 @@ class P4Explorer(sublime_plugin.WindowCommand):
 			p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 			stdout, stderr = p.communicate(timeout=60)
 			if stderr:
-				P4Explorer.log('Error', stderr.decode())
+				P4Explorer.logError(stderr.decode())
 				return False
 
 		return True
@@ -67,6 +67,14 @@ class P4Explorer(sublime_plugin.WindowCommand):
 		log_message = "[{0}] {1}: {2}".format(__PLUGIN_NAME__, level, message)
 		print(log_message)
 		sublime.status_message(log_message)
+
+	@staticmethod
+	def logInfo(message):
+		P4Explorer.log('Info', message)
+
+	@staticmethod
+	def logError(message):
+		P4Explorer.log('Error', message)
 
 
 
