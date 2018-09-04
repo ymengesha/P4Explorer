@@ -1,0 +1,11 @@
+[
+	{
+		"caption": "-",
+		"id": "p4explorer"
+	},
+	{
+		"command": "p4_explorer",
+		"caption": "Open Perforce File(s)",
+		"mnemonic": "P"
+	}
+]

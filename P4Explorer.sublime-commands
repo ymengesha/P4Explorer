@@ -1,0 +1,6 @@
+[
+	{
+		"caption": "P4Explorer: Open Perforce File(s)",
+		"command": "p4_explorer"
+	}
+]
