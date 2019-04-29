@@ -10,6 +10,7 @@ import re
 __PLUGIN_NAME__ = 'P4Explorer'
 
 PERFORCE_PATH_REGEX = r'//[- .\w]+(?:/[- .\w]+)*(?:[#@]\d+)?'
+REV_REGEX = re.compile(r'.*(#\d+)$')
 
 
 class P4Explorer(sublime_plugin.WindowCommand):
@@ -56,8 +57,7 @@ class P4Explorer(sublime_plugin.WindowCommand):
     def getTmpFileName(self, perforcePath):
         file_path = perforcePath.lstrip('/')
 
-        rev_pattern = re.compile(r'.*(#\d+)$')
-        match = re.match(rev_pattern, file_path)
+        match = re.match(REV_REGEX, file_path)
         if match:
             root, ext = os.path.splitext(file_path)
             if ext:
