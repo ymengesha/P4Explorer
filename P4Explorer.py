@@ -64,6 +64,8 @@ class P4Explorer(sublime_plugin.WindowCommand):
                 rev = match.group(1)
                 rearranged_ext = rev + ext[:-len(rev)]
                 return root + rearranged_ext
+        else:
+            self.getHeadRevision(perforcePath)
 
         return file_path
 
@@ -78,6 +80,16 @@ class P4Explorer(sublime_plugin.WindowCommand):
                 return False
 
         return True
+
+    def getHeadRevision(self, perforcePath):
+        perforce_command = 'p4 files -e "{0}"'.format(perforcePath)
+        p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, shell=True)
+        stdout, stderr = p.communicate(timeout=60)
+        if stderr:
+            P4Explorer.logError(stderr.decode())
+        if stdout:
+            P4Explorer.logInfo(stdout.decode())
 
     @staticmethod
     def logInfo(message):
