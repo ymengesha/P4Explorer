@@ -22,10 +22,12 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
         for region in selection:
             if region.empty():
-                P4Explorer.logInfo('No selection, looking for a Perforce path ...')
+                P4Explorer.logInfo(
+                    'No selection, looking for a Perforce path ...')
                 region = self.findPerforcePath(region)
                 if not region:
-                    P4Explorer.logError('No Perforce path found at current position.')
+                    P4Explorer.logError(
+                        'No Perforce path found at current position.')
                     continue
 
             perforce_path = active_view.substr(region).strip()
@@ -71,7 +73,8 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
     def fetchPeforceFile(self, perforcePath, tmpPath):
         if not os.path.isfile(tmpPath):
-            perforce_command = 'p4 print -q -o "{0}" "{1}"'.format(tmpPath, perforcePath)
+            perforce_command = 'p4 print -q -o "{0}" "{1}"'.format(
+                tmpPath, perforcePath)
             p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE, shell=True)
             stdout, stderr = p.communicate(timeout=60)
