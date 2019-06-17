@@ -22,10 +22,12 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
         for region in selection:
             if region.empty():
-                P4Explorer.logInfo('No selection, looking for a Perforce path ...')
+                P4Explorer.logInfo(
+                    'No selection, looking for a Perforce path ...')
                 region = self.findPerforcePath(region)
                 if not region:
-                    P4Explorer.logError('No Perforce path found at current position.')
+                    P4Explorer.logError(
+                        'No Perforce path found at current position.')
                     continue
 
             perforce_path = active_view.substr(region).strip()
@@ -55,23 +57,34 @@ class P4Explorer(sublime_plugin.WindowCommand):
         return os.path.abspath(os.path.join(tmp_dir, __PLUGIN_NAME__, tmp_file_name))
 
     def getTmpFileName(self, perforcePath):
-        file_path = perforcePath.lstrip('/')
+        tmp_file_name = perforcePath
 
-        match = re.match(REV_REGEX, file_path)
+        match = re.match(REV_REGEX, perforcePath)
         if match:
-            root, ext = os.path.splitext(file_path)
-            if ext:
-                rev = match.group(1)
-                rearranged_ext = rev + ext[:-len(rev)]
-                return root + rearranged_ext
+            tmp_file_name = self.flipRevisionExtension(
+                perforcePath, match.group(1))
         else:
-            self.getHeadRevision(perforcePath)
+            head_rev = self.getHeadRevision(perforcePath)
+            if head_rev:
+                match = re.match(REV_REGEX, head_rev)
+                if match:
+                    tmp_file_name = self.flipRevisionExtension(
+                        head_rev, match.group(1))
 
-        return file_path
+        return tmp_file_name.lstrip('/')
+
+    def flipRevisionExtension(self, perforcePath, rev):
+        root, ext = os.path.splitext(perforcePath)
+        if ext:
+            rearranged_ext = rev + ext[:-len(rev)]
+            return root + rearranged_ext
+
+        return perforcePath
 
     def fetchPeforceFile(self, perforcePath, tmpPath):
         if not os.path.isfile(tmpPath):
-            perforce_command = 'p4 print -q -o "{0}" "{1}"'.format(tmpPath, perforcePath)
+            perforce_command = 'p4 print -q -o "{0}" "{1}"'.format(
+                tmpPath, perforcePath)
             p = subprocess.Popen(perforce_command, stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE, shell=True)
             stdout, stderr = p.communicate(timeout=60)
@@ -88,8 +101,14 @@ class P4Explorer(sublime_plugin.WindowCommand):
         stdout, stderr = p.communicate(timeout=60)
         if stderr:
             P4Explorer.logError(stderr.decode())
+            return None
+
         if stdout:
-            P4Explorer.logInfo(stdout.decode())
+            match = re.search(PERFORCE_PATH_REGEX, stdout.decode())
+            if match:
+                return match.group()
+
+        return None
 
     @staticmethod
     def logInfo(message):
