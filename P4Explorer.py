@@ -38,7 +38,6 @@ class P4Explorer(sublime_plugin.WindowCommand):
 
             if self.fetchPeforceFile(perforce_path, tmp_path):
                 self.window.open_file(tmp_path)
-            # TO-DO: maybe consider syntax setting for the opened file
 
     def findPerforcePath(self, region):
         active_view = self.window.active_view()
